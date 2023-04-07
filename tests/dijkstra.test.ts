@@ -1,4 +1,4 @@
-import { dijkstra } from "../src/bfsAlgorithms/dijkstraBfs";
+import { dijkstraBfs } from "../src/bfsAlgorithms/dijkstraBfs";
 import { GraphFactory } from "../src/dataStructures/graphFactory";
 
 const weightedEdges = [
@@ -26,7 +26,7 @@ test('test dijkstra', () => {
 
     const getEdge = (source: number, destination: number) => weightedEdges.find(e => e[0] === source && e[1] === destination || e[0] === destination && e[1] === source)?.[2];
 
-    const nodeWeights = dijkstra(graph, { getEdge }, 0);
+    const nodeWeights = dijkstraBfs(graph, { getEdge }, 0);
 
     const nodeWeightsArray = [...nodeWeights].sort((a, b) => b[0] - a[0]);
 
