@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "tsconfigRootDir": "src"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "filename-rules"
+  ],
+  "rules": {
+    "filename-rules/match": [2, "camelcase"]
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ]
+}
