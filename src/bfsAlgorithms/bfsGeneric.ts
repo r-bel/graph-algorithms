@@ -1,7 +1,7 @@
 import { AdjacencyProvider } from "../generic-models/adjacencyProvider";
 
 /** Generic BFS graph visitor
- * Purely a bread first search algorithm which is the base of many graph algorithms.
+ * Purely a breadth first search algorithm which is the base of many graph algorithms.
  * This contains only the strategy and relies on lambdas for injecting concrete use. 
 */
 export const bfsGeneric = (
