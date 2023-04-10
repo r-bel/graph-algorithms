@@ -1,0 +1,8 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist", // will create a folder in the root containing compiled javascript
+    },
+    "include": ["**/*.ts"]
+}

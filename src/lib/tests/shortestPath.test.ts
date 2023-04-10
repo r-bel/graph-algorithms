@@ -26,7 +26,7 @@ test('test shortest path', () => {
 
     const paths = [...cameFrom.entries()];
 
-    const expected = [
+    const expected: [number, number | null][] = [
         [0, null], [1, 0],
         [7, 0], [2, 1],
         [8, 7], [6, 7],
