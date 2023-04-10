@@ -1,10 +1,8 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "commonjs",
-        "outDir": "build", // will create a folder in the root containing compiled javascript
-        "sourceMap": true,
-        "strict": true,
-        "removeComments": true,
-    }
-}
+    "files": [],
+    "references": [
+      { "path": "src/lib" },
+      { "path": "src/test-app" }
+    ]
+  }
+  

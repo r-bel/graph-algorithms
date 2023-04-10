@@ -18,7 +18,7 @@ const weightedEdges = [
     [5, 2, 4],
 ];
 
-const expectedNodeWeights = [[0, 0], [1, 4], [2, 12], [3, 19], [4, 21], [5, 11], [6, 9], [7, 8], [8, 14]];
+const expectedNodeWeights: [number, number][] = [[0, 0], [1, 4], [2, 12], [3, 19], [4, 21], [5, 11], [6, 9], [7, 8], [8, 14]];
 
 test('test dijkstra', () => {
 

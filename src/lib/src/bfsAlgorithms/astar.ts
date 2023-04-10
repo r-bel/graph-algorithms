@@ -30,7 +30,6 @@ export const aStar = (graph: AdjacencyProvider,
             const priority = heuristic(destination!, next);
             costSoFar.set(next, newCost + priority);
             frontier.enqueue(next, priority);
-            console.warn(next, priority);
             cameFrom.add(next);
         }
     };

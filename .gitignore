@@ -3,3 +3,9 @@
 /build
 
 results
+
+# TypeScript cache
+*.tsbuildinfo
+
+# generate output
+dist
