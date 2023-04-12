@@ -6,7 +6,9 @@ import { AdjacencyProvider } from "../generic-models/adjacencyProvider";
 /**
  * Uniform Cost Search algorithm aka Dijkstra's algorithm based on generic bfs traversing.
  */
-export const dijkstraBfs = (graph: AdjacencyProvider, edgeCostProvider: ProvidesEdgeAttribute<number, number>, start: number, destination?: number): Map<number, number | null> => {
+export const dijkstraBfs = (graph: AdjacencyProvider, edgeCostProvider: ProvidesEdgeAttribute<number, number>,
+    start: number, destination?: number,
+    addFrontier?: (node: number) => void): Map<number, number | null> => {
 
     // const cameFrom = new Map<number, number | null>();
 
@@ -30,6 +32,7 @@ export const dijkstraBfs = (graph: AdjacencyProvider, edgeCostProvider: Provides
             costSoFar.set(next, newCost);
             frontier.enqueue(next, newCost);
             cameFrom.add(next);
+            addFrontier?.(next);
         }
     };
 
