@@ -1,104 +1,146 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { GraphFactory, dijkstraBfs } from '@graph-algorithms/lib';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { dijkstraBfs } from '@graph-algorithms/lib';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements AfterViewInit {
 
-  @ViewChild('canvas', { static: true })
-  public canvasRef: ElementRef<HTMLCanvasElement> | null = null;
+  readonly width = 200;
+  readonly height = 200;
+  readonly traject: number[] = [];
+  readonly frontier = new Set<number>();
 
-  // private ctx: CanvasRenderingContext2D;
+  source = 0;
+  destination = 0;
+
+  constructor(private ref: ChangeDetectorRef) {
+    ref.detach();
+  }
+
+  * columns() {
+    for (let i = 0; i < this.width; i++) yield i;
+  }
+
+  * rows() {
+    for (let i = 0; i < this.height; i++) yield i;
+  }
+
+  onMousedown(x: number, y: number) {
+    this.source = y * this.width + x;
+
+    this.dragging = true;
+  }
+
+  dragging = false;
+
+  onMousemove(x: number, y: number) {
+    if (this.dragging) {
+      this.destination = y * this.width + x;
+
+      this.recalc();
+    }
+  }
+
+  onMouseup(x: number, y: number) {
+
+    this.dragging = false;
+  }
+
+  gridAdjacencyProvider = {
+
+    getAllAdjacent: (node: number) => {
+
+      const coord = [node % this.width, Math.floor(node / this.width)];
+
+      const neighbours: number[] = [];
+
+      let x = coord[0] - 1;
+      let y = coord[1];
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0] + 1;
+      y = coord[1];
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0];
+      y = coord[1] - 1;
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0];
+      y = coord[1] + 1;
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0] - 1;
+      y = coord[1] - 1;
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0] + 1;
+      y = coord[1] - 1;
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0] - 1;
+      y = coord[1] + 1;
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      x = coord[0] + 1;
+      y = coord[1] + 1;
+      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        neighbours.push(x + y * this.width);
+
+      return neighbours;
+    }
+  }
+
+  getEdge = (source: number, destination: number) => {
+    console.warn(source, destination);
+    return 1;
+  }
+
+  recalc() {
+
+    this.frontier.clear();
+
+    const nodeWeights = dijkstraBfs(this.gridAdjacencyProvider, { getEdge: this.getEdge }, this.source, this.destination,
+      (n) => {
+        this.frontier.add(n);
+      });
+
+    let destination = this.destination;
+
+    this.traject.length = 0;
+
+    this.traject.push(destination);
+
+    while (destination !== this.source) {
+
+      const adj = this.gridAdjacencyProvider.getAllAdjacent(destination);
+
+      const w = adj.map((node): [number, number | null | undefined] => ([node, nodeWeights.get(node)])).filter(t => t[1] !== undefined);
+      w.forEach(t => t[1]! += this.getEdge(destination, t[0]));
+
+      const p = w?.sort((a, b) => a[1]! - b[1]!);
+
+      destination = p[0][0];
+
+      this.traject.push(destination);
+    }
+
+    this.ref.detectChanges();
+  }
 
   ngAfterViewInit(): void {
 
-
-
-    const weightedEdges = [
-      [0, 1, 4],
-      [0, 7, 8],
-      [1, 7, 11],
-      [1, 2, 8],
-      [8, 2, 2],
-      [8, 7, 7],
-      [6, 7, 1],
-      [6, 8, 6],
-      [2, 3, 7],
-      [5, 3, 14],
-      [5, 6, 2],
-      [3, 4, 9],
-      [5, 4, 10],
-      [5, 2, 4],
-    ];
-
-    const source = 0;
-
-    // Construct a graph from the original edges being passed.
-    const graph = GraphFactory.createAdjacencyList(weightedEdges);
-
-    let destination = 4;
-
-    // bfs(originalGraph, source, destination);
-    const getEdge = (source: number, destination: number) => weightedEdges.find(e => e[0] === source && e[1] === destination || e[0] === destination && e[1] === source)?.[2];
-
-    const nodeWeights = dijkstraBfs(graph, { getEdge }, source, destination);
-
-
-
-
-    const ctx = this.canvasRef!.nativeElement.getContext('2d')!;
-
-    const w: number = 800;
-    const h: number = 400;
-    const s: number = 40;
-
-    const cw = Math.fround(w + 1);
-    const ch = Math.fround(h + 1);
-
-    this.canvasRef!.nativeElement.width = cw;
-    this.canvasRef!.nativeElement.height = ch;
-
-
-    // Square Size
-    const squareSize = Math.fround(s);
-
-    ctx.clearRect(0, 0, cw, ch);
-    // Set line color
-    ctx.strokeStyle = '#333';
-    // Set font size and color
-    ctx.font = 'normal ' + Math.fround(squareSize / 3) + 'px arial';
-    ctx.fillStyle = 'orange';
-
-    ctx.beginPath();
-    // Vertical Lines and label
-    for (let x = Math.fround(0.5); x < cw; x += squareSize) {
-      // Lines
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, ch);
-      // Label
-      // const colLabel = this.colName((colCounter += 1));
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      // ctx.fillText(colLabel, Math.fround(x + squareSize / 2), 0);
-    }
-    // Horizontal Lines and label
-    for (let y = Math.fround(0.5); y < ch; y += squareSize) {
-      // Lines
-      ctx.moveTo(0, y);
-      ctx.lineTo(cw, y);
-      // Label
-      // const rowLabel = (rowCounter += 1);
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      // ctx.fillText(rowLabel.toString(), 0, Math.fround(y + squareSize / 2));
-    }
-    // Drawing
-    ctx.stroke();
+    this.ref.detectChanges();
   }
-
-
-
 }

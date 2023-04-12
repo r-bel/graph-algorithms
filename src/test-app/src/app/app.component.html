@@ -1,1 +1,19 @@
-<canvas #canvas></canvas>
+<svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+    <ng-container *ngFor="let x of columns() ">
+        <ng-container *ngFor="let y of rows() ">
+            <rect *ngIf="traject.includes(y * width + x); else toFrontier" [attr.x]="x*10" [attr.y]="y*10" width="10"
+                height="10" style="fill:red;stroke-width:1;stroke:grey" (mousedown)="onMousedown(x, y)"
+                (mouseup)="onMouseup(x, y)" (mousemove)="onMousemove(x, y)"/>
+            <ng-template #toFrontier>
+                <rect *ngIf="frontier.has(y * width + x); else defaultSquares" [attr.x]="x*10" [attr.y]="y*10"
+                    width="10" height="10" style="fill:black;stroke-width:1;stroke:grey" (mousedown)="onMousedown(x, y)"
+                    (mouseup)="onMouseup(x, y)" (mousemove)="onMousemove(x, y)" />
+                <ng-template #defaultSquares>
+                    <rect [attr.x]="x*10" [attr.y]="y*10" width="10" height="10"
+                        style="fill:antiquewhite;stroke-width:1;stroke:grey" (mousedown)="onMousedown(x, y)"
+                        (mouseup)="onMouseup(x, y)" (mousemove)="onMousemove(x, y)" />
+                </ng-template>
+            </ng-template>
+        </ng-container>
+    </ng-container>
+</svg>
