@@ -13,6 +13,7 @@ export class AppComponent implements AfterViewInit {
   readonly height = 200;
   readonly traject: number[] = [];
   readonly frontier = new Set<number>();
+  readonly blockedNodes = new Set<number>();
 
   source = 0;
   destination = 0;
@@ -45,6 +46,12 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  ondblclick(x: number, y: number) {
+    this.blockedNodes.add(y * this.width + x);
+    this.ref.detectChanges();
+
+  }
+
   onMouseup(x: number, y: number) {
 
     this.dragging = false;
@@ -56,54 +63,17 @@ export class AppComponent implements AfterViewInit {
 
       const coord = [node % this.width, Math.floor(node / this.width)];
 
-      const neighbours: number[] = [];
-
-      let x = coord[0] - 1;
-      let y = coord[1];
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0] + 1;
-      y = coord[1];
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0];
-      y = coord[1] - 1;
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0];
-      y = coord[1] + 1;
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0] - 1;
-      y = coord[1] - 1;
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0] + 1;
-      y = coord[1] - 1;
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0] - 1;
-      y = coord[1] + 1;
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
-
-      x = coord[0] + 1;
-      y = coord[1] + 1;
-      if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-        neighbours.push(x + y * this.width);
+      const neighbours = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]]
+        .map(tuple => [coord[0] + tuple[0], coord[1] + tuple[1]])
+        .filter(([x, y]) => x >= 0 && y >= 0 && x < this.width && y < this.height)
+        .map(([x, y]) => x + y * this.width)
+        .filter(n => !this.blockedNodes.has(n));
 
       return neighbours;
     }
   }
 
   getEdge = (source: number, destination: number) => {
-    console.warn(source, destination);
     return 1;
   }
 
