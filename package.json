@@ -9,8 +9,7 @@
     "build": "tsc --build"
   },
   "workspaces": [
-    "src/lib",
-    "src/test-app"
+    "src/*"
   ],
   "devDependencies": {
     "typescript": "^5.0.2"
