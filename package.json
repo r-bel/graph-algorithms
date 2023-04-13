@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "private": "true",
-  "author": "Dirk R. R. Dhaenens",
+  "author": "Dirk Dhaenens",
   "license": "ISC",
   "scripts": {
     "build": "tsc --build"
   },
   "workspaces": [
-    "src/*"
+    "projects/*"
   ],
   "devDependencies": {
     "typescript": "^5.0.2"

@@ -5,11 +5,11 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/src/lib/src/test.ts",
-      "cwd": "${workspaceRoot}/src/lib/",
-      "preLaunchTask": "tsc: build - src/lib/tsconfig.json",
+      "program": "${workspaceFolder}/projects/lib/src/test.ts",
+      "cwd": "${workspaceRoot}/projects/lib/",
+      "preLaunchTask": "tsc: build - projects/lib/tsconfig.json",
       "outFiles": [
-        "${workspaceFolder}/src/lib/**/*.js"
+        "${workspaceFolder}/projects/lib/**/*.js"
       ]
     }
   ]

@@ -1,8 +1,8 @@
 {
     "files": [],
     "references": [
-      { "path": "src/lib" },
-      { "path": "src/test-app" }
+      { "path": "projects/lib" },
+      { "path": "projects/test-app" }
     ]
   }
   
