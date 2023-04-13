@@ -7,7 +7,7 @@ module.exports = {
 
   transform: {'^.+\\.ts?$': 'ts-jest'},
   testEnvironment: 'node',
-  testRegex: '/src/lib/tests/.*\\.(test|spec)?\\.(ts|tsx)$',
+  testRegex: '/projects/lib/tests/.*\\.(test|spec)?\\.(ts|tsx)$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   // All imported modules in your tests should be mocked automatically
