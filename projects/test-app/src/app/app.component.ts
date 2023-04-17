@@ -1,60 +1,73 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { dijkstraBfs } from '@graph-algorithms/lib';
+import { GridCoordinate, SvgGridComponent } from '../components/svg-grid/svg-grid.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
+
+  @ViewChild(SvgGridComponent) 
+  child!: SvgGridComponent;
 
   readonly width = 200;
-  readonly height = 200;
+  readonly height = 100;
   readonly traject: number[] = [];
   readonly frontier = new Set<number>();
   readonly blockedNodes = new Set<number>();
 
   source = 0;
   destination = 0;
+  dragging = false;
 
-  constructor(private ref: ChangeDetectorRef) {
-    ref.detach();
+  getStyle = (x: number, y: number) => {
+
+    const node = y * this.width + x;
+
+    if (this.traject.includes(node)) {
+      return 'fill:red;stroke-width:1;stroke:grey';
+    } else if (this.frontier.has(node)) {
+      return 'fill:black;stroke-width:1;stroke:grey';
+    } else if (this.blockedNodes.has(node)) {
+      return 'fill:brown;stroke-width:1;stroke:grey';
+    } else {
+      return 'fill:antiquewhite;stroke-width:1;stroke:grey';
+    }
   }
 
-  * columns() {
-    for (let i = 0; i < this.width; i++) yield i;
-  }
+  onMousedown(coordinate: GridCoordinate) {
 
-  * rows() {
-    for (let i = 0; i < this.height; i++) yield i;
-  }
-
-  onMousedown(x: number, y: number) {
-    this.source = y * this.width + x;
+    this.source = coordinate.y * this.width + coordinate.x;
 
     this.dragging = true;
   }
 
-  dragging = false;
+  onMousemove(coordinate: GridCoordinate) {
 
-  onMousemove(x: number, y: number) {
-    if (this.dragging) {
-      this.destination = y * this.width + x;
+    const node = coordinate.y * this.width + coordinate.x;
+
+    if (this.dragging && !this.blockedNodes.has(node)) {
+
+      this.destination = node;
 
       this.recalc();
+
+      this.child.redraw();
     }
   }
 
-  ondblclick(x: number, y: number) {
-    this.blockedNodes.add(y * this.width + x);
-    this.ref.detectChanges();
+  ondblclick(coordinate: GridCoordinate) {
 
+    this.blockedNodes.add(coordinate.y * this.width + coordinate.x);
+
+    this.child.redraw();
   }
 
-  onMouseup(x: number, y: number) {
+  onMouseup() {
 
-    this.dragging = false;
+    this.dragging = false;    
   }
 
   gridAdjacencyProvider = {
@@ -74,6 +87,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   getEdge = (source: number, destination: number) => {
+
     return 1;
   }
 
@@ -105,12 +119,5 @@ export class AppComponent implements AfterViewInit {
 
       this.traject.push(destination);
     }
-
-    this.ref.detectChanges();
-  }
-
-  ngAfterViewInit(): void {
-
-    this.ref.detectChanges();
   }
 }

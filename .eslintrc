@@ -9,7 +9,7 @@
     "filename-rules"
   ],
   "rules": {
-    "filename-rules/match": [2, "camelcase"]
+    // "filename-rules/match": [2, "camelcase"]
   },
   "extends": [
     "eslint:recommended",
