@@ -1,10 +1,12 @@
-<svg [attr.min-x]="0" [attr.min-y]="0" [attr.height]="height*cellSize" [attr.width]="width*cellSize"
+<svg [attr.min-x]="0" [attr.min-y]="150" [attr.height]="height*cellSize+150" [attr.width]="width*cellSize"
     xmlns="http://www.w3.org/2000/svg" style="border: 5px solid red">
     <ng-container *ngFor="let x of largeIterate(this.width) ">
         <ng-container *ngFor="let y of largeIterate(this.height) ">
             <svg:rect [attr.x]="x*cellSize" [attr.y]="y*cellSize" [attr.width]="cellSize" [attr.height]="cellSize"
                 [style]="getStyle(x, y)" (mousedown)="onMousedown.emit({x, y})" (mouseup)="onMouseup.emit({x, y})"
-                (mousemove)="onMousemove.emit({x, y})" (dblclick)="onDblclick.emit({x, y})" />
+                (touchstart)="onTouch({x, y}); $event.preventDefault();"
+                (mousemove)="onMousemove.emit({x, y}); "
+                (dblclick)="onDblclick.emit({x, y})" />
         </ng-container>
     </ng-container>
 
