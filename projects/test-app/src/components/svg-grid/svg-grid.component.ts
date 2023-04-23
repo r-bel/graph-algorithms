@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 export interface GridCoordinate {
   x: number;
@@ -36,6 +36,19 @@ export class SvgGridComponent implements AfterViewInit {
 
   @Input()
   getStyle: (x: number, y: number) => string = () => this.defaultStyle;
+  
+  touchBegin = false;
+  
+  onTouch(coordinate: GridCoordinate) {
+
+    if (this.touchBegin) {
+      this.onMouseup.emit(coordinate);
+      this.touchBegin = false;
+    } else {
+      this.onMousedown.emit(coordinate);
+      this.touchBegin = true;
+    }
+  }
 
   constructor(private ref: ChangeDetectorRef) {
     ref.detach();

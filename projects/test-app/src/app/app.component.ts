@@ -9,7 +9,7 @@ import { GridCoordinate, SvgGridComponent } from '../components/svg-grid/svg-gri
 })
 export class AppComponent {
 
-  @ViewChild(SvgGridComponent) 
+  @ViewChild(SvgGridComponent)
   child!: SvgGridComponent;
 
   readonly width = 200;
@@ -39,9 +39,11 @@ export class AppComponent {
 
   onMousedown(coordinate: GridCoordinate) {
 
-    this.source = coordinate.y * this.width + coordinate.x;
+    if (!this.dragging) {
+      this.source = coordinate.y * this.width + coordinate.x;
 
-    this.dragging = true;
+      this.dragging = true;
+    }
   }
 
   onMousemove(coordinate: GridCoordinate) {
@@ -65,9 +67,21 @@ export class AppComponent {
     this.child.redraw();
   }
 
-  onMouseup() {
+  onMouseup(coordinate: GridCoordinate) {
 
-    this.dragging = false;    
+    const node = coordinate.y * this.width + coordinate.x;
+
+    if (this.dragging && !this.blockedNodes.has(node)) {
+
+      this.destination = node;
+
+      this.recalc();
+
+      this.child.redraw();
+
+    }
+
+    this.dragging = false;
   }
 
   gridAdjacencyProvider = {

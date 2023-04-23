@@ -4,7 +4,9 @@
         <ng-container *ngFor="let y of largeIterate(this.height) ">
             <svg:rect [attr.x]="x*cellSize" [attr.y]="y*cellSize" [attr.width]="cellSize" [attr.height]="cellSize"
                 [style]="getStyle(x, y)" (mousedown)="onMousedown.emit({x, y})" (mouseup)="onMouseup.emit({x, y})"
-                (mousemove)="onMousemove.emit({x, y})" (dblclick)="onDblclick.emit({x, y})" />
+                (touchstart)="onTouch({x, y}); $event.preventDefault();"
+                (mousemove)="onMousemove.emit({x, y}); "
+                (dblclick)="onDblclick.emit({x, y})" />
         </ng-container>
     </ng-container>
 
